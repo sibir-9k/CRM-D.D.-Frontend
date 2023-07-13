@@ -1,0 +1,46 @@
+@import '../../colors.scss';
+
+.plug {
+	height: 100%;
+	padding: 24px 24px;
+	overflow-y: hidden;
+
+	.container {
+		padding: 0px 24px;
+		margin: 0 auto;
+		height: 100%;
+	}
+	.plug__block {
+		height: 100%;
+		display: flex;
+		border: 1px solid $border-color-default;
+		border-radius: 4px;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+
+		.plug__message {
+			font-family: 'Open Sans';
+			font-style: normal;
+			font-weight: 400;
+			font-size: 14px;
+			line-height: 19px;
+			margin-bottom: 10px;
+		}
+		.plug__btn {
+			width: 98px;
+			height: 42px;
+			background: $bg-primary-default;
+			border-radius: 4px;
+			color: $font-color-secondary;
+			border: inherit;
+			cursor: pointer;
+			&:hover {
+				background: $bg-primary-hover;
+			}
+			&:active {
+				background: $bg-primary-active;
+			}
+		}
+	}
+}
