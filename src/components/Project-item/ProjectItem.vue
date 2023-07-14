@@ -60,7 +60,7 @@ export default {
 					type: 'button',
 					props: {
 						onClick: () => {
-							this.$emit('openModal', this.project._id);
+							this.$emit('editModalOpen', this.project._id);
 						},
 					},
 					text: 'Редактировать',
@@ -68,8 +68,8 @@ export default {
 				{
 					type: 'button',
 					props: {
-						onClick: (event) => {
-							// this.$emit('openModal', this.project._id);
+						onClick: () => {
+							this.$emit('deleteModalOpen', this.project._id);
 						},
 					},
 					class: 'delete',

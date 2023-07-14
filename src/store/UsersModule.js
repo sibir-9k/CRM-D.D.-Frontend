@@ -3,6 +3,7 @@ import { BASE_URL } from '@/api/api.js';
 
 export const mutation = {
 	SET_USERS_LIST: 'SET_USERS_LIST',
+	SET_ALL_USERS_LIST: 'SET_ALL_USERS_LIST',
 	SET_USERS_CURRENT_PAGE: 'SET_USERS_CURRENT_PAGE',
 	SET_USERS_TOTAL_PAGES: 'SET_USERS_TOTAL_PAGES',
 	SET_USERS_FETCHING: 'SET_USERS_FETCHING',
@@ -13,12 +14,17 @@ export default {
 
 	state: {
 		usersArray: [],
+		allUsersArray: [],
 		totalPages: null,
 		currentPage: 1,
 		isFetching: false,
 	},
 	getters: {
-		getAllUsers: (state) => state.usersArray,
+		getUsers: (state) => state.usersArray,
+		getAllUsers: (state) =>
+			state.allUsersArray.map((user) => {
+				return { optionText: user.name, value: user._id };
+			}),
 		getTotalPages: (state) => state.totalPages,
 		getCurrentPage: (state) => state.currentPage,
 		getFetching: (state) => state.isFetching,
@@ -26,6 +32,9 @@ export default {
 	mutations: {
 		[mutation.SET_USERS_LIST]: (state, payload) => {
 			state.usersArray = payload;
+		},
+		[mutation.SET_ALL_USERS_LIST]: (state, payload) => {
+			state.allUsersArray = payload;
 		},
 		[mutation.SET_USERS_TOTAL_PAGES]: (state, payload) => {
 			state.totalPages = payload;
@@ -38,7 +47,7 @@ export default {
 		},
 	},
 	actions: {
-		async getAllUsers(context, objData = { page: 1 }) {
+		async getUsers(context, objData = { page: 1 }) {
 			context.commit(mutation.SET_USERS_FETCHING, true);
 			try {
 				const response = await axios.post(`${BASE_URL}/users/search`, objData, {
@@ -53,6 +62,27 @@ export default {
 				context.commit(mutation.SET_USERS_CURRENT_PAGE, result.page);
 				context.commit(mutation.SET_USERS_LIST, response.data.users);
 				console.log(result);
+			} catch (error) {
+				console.log(error);
+			}
+		},
+		async getAllUsers(context) {
+			try {
+				const response = await axios.post(
+					`${BASE_URL}/users/search`,
+					{
+						limit: 9999,
+						sort: 'asc', // asc, desc
+					},
+					{
+						headers: {
+							'Content-Type': 'application/json',
+							Authorization: `Bearer ${localStorage.getItem('UserToken')}`,
+						},
+					}
+				);
+				const result = await response.data;
+				context.commit(mutation.SET_ALL_USERS_LIST, result.users);
 			} catch (error) {
 				console.log(error);
 			}

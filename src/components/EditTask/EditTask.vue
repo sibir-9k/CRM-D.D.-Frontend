@@ -10,7 +10,7 @@
     <hr />
     <div class="btn-block">
       <Button btnClassName="btn-cancel" btnName="Отмена"></Button>
-      <Button btnClassName="btn-create" btnName="Создать задачу"></Button>
+      <Button btnClassName="btn-create" btnName="Сохранить изменения"></Button>
     </div>
   </div>
 </template>

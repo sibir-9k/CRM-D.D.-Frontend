@@ -28,29 +28,31 @@ const routes = [
 		path: '/tasks',
 		name: 'tasks',
 		component: TasksView,
-    meta: { auth: true },
+		meta: { auth: true },
 	},
 	{
 		path: '/profile',
 		name: 'profile',
 		component: ProfileView,
-    meta: { auth: true },
+		meta: { auth: true },
 	},
 	{
 		path: '/create-task',
 		name: 'create-task',
 		component: CreateTask,
+    meta: { auth: true },
 	},
 	{
 		path: '/edit-task',
 		name: 'edit-task',
 		component: EditTask,
+    meta: { auth: true },
 	},
 	{
 		path: '/users',
 		name: 'users',
 		component: UsersView,
-    meta: { auth: true },
+		meta: { auth: true },
 	},
 	{
 		path: '*',
@@ -65,15 +67,29 @@ const router = new VueRouter({
 	routes,
 });
 
-router.beforeEach((to, from, next) => {
-	const currentUserIsAuth = store.getters['AuthUserModule/getUserToken'];
+const guardAuth = async (next) => {
+	if (!localStorage.getItem('UserToken')) next('/auth');
+
+	await router.app.$store.dispatch(
+		'AuthUserModule/getCurrentUser',
+		localStorage.getItem('UserToken')
+	);
+
+	const currentUserIsAuth = store.getters['AuthUserModule/getCurrentUserData'];
+
+	if (!currentUserIsAuth) {
+		next('/auth');
+	}
+};
+
+router.beforeEach(async (to, from, next) => {
 	const requreAuth = to.matched.some((route) => route.meta.auth);
 
-	if (requreAuth && !currentUserIsAuth) {
-		next('/auth');
-	} else {
-		next();
+	if (requreAuth) {
+		await guardAuth(next);
 	}
+
+	next();
 });
 
 export default router;

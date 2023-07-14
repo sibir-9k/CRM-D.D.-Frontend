@@ -66,7 +66,7 @@ export default {
 					},
 				});
 				console.log(response);
-				context.commit(mutation.SET_USER_ID, response.data._id);
+				context.commit(mutation.SET_USER_ID, response.data._id); /// проверить используется где то
 				context.commit(mutation.SET_USER_CURRENT_DATA, response.data);
 			} catch (error) {
 				console.log(error);

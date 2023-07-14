@@ -51,12 +51,19 @@ export default {
 	},
 	created() {
 		if (this.project) {
-			// this.projectFormData.code = this.project.code;
-			// this.projectFormData.name = this.project.name;
-
-			this.updateProjectFormData.code = this.projectFormData.code;
-			this.updateProjectFormData.name = this.projectFormData.name;
+			this.projectFormData.code = this.project.code;
+			this.projectFormData.name = this.project.name;
 		}
+	},
+
+	watch: {
+		projectFormData: {
+			handler: function (val) {
+				this.updateProjectFormData.code = val.code;
+				this.updateProjectFormData.name = val.name;
+			},
+			deep: true,
+		},
 	},
 };
 </script>

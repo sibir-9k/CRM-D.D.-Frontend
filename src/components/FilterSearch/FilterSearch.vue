@@ -28,7 +28,6 @@
 				>{{ btn.text }}</component
 			>
 		</div>
-		<!-- <router-link to="/create-task" class="filter-search__add-task"> Добавить </router-link> -->
 	</div>
 </template>
 

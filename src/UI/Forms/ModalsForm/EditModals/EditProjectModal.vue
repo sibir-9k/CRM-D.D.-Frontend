@@ -1,16 +1,16 @@
 <template>
-	<div class="container-form" :class="{ active: modalOpen }">
+	<div class="container-form">
 		<div class="project-create">
-			<h2 class="project-create__title">Создание проекта</h2>
+			<h2 class="project-create__title">Редактирование проекта</h2>
 			<hr />
-			<FormProject v-bind:projectFormData="projectFormData"></FormProject>
+			<FormProject :project="project" :updateProjectFormData="updateProjectFormData"></FormProject>
 			<hr />
 			<div class="btn-block">
 				<Button btnClassName="btn-cancel" btnName="Отмена" v-on:click="modalClose"></Button>
 				<Button
 					btnClassName="btn-create"
-					btnName="Создать задачу"
-					v-on:click="createProject(projectFormData.code, projectFormData.name)"></Button>
+					btnName="Сохранить"
+					v-on:click="editProject(updateProjectFormData.code, updateProjectFormData.name)"></Button>
 			</div>
 		</div>
 	</div>
@@ -23,16 +23,16 @@ import FormProject from '@/UI/Forms/FormProject/FormProject.vue';
 import Button from '@/UI/Button/Button.vue';
 
 export default {
-	name: 'CreateProjectModal',
+	name: 'EditProjectModal',
 	components: { FormProject, Button },
 	props: {
-		modalOpen: {
-			type: Boolean,
+		project: {
+			type: Object,
 		},
 	},
 	data() {
 		return {
-			projectFormData: {
+			updateProjectFormData: {
 				code: '',
 				name: '',
 			},
@@ -40,16 +40,17 @@ export default {
 	},
 	methods: {
 		modalClose() {
-			this.$emit('modal-close');
+			this.$emit('closeModal', this.project._id);
 		},
 		updateProjectsList() {
 			this.$emit('getProjects');
 		},
-		async createProject(code, name) {
+		async editProject(code, name) {
 			try {
-				const response = await axios.post(
+				const response = await axios.put(
 					`${BASE_URL}/projects`,
 					{
+						_id: `${this.project._id}`,
 						name: `${name}`,
 						code: `${code}`,
 					},
@@ -72,4 +73,6 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+@import url('./style.scss');
+</style>

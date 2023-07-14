@@ -13,7 +13,8 @@
 								v-for="project in allProjects"
 								:project="project"
 								:key="project._id"
-								@openModal="editModalOpen">
+								@editModalOpen="editModalOpen"
+								@deleteModalOpen="deleteModalOpen">
 							</ProjectItem>
 						</div>
 					</template>
@@ -31,15 +32,26 @@
 					:modalOpen="modalOpen"
 					@modal-close="modalClose"
 					@getProjects="getProjects"></CreateProjectModal>
-				<EditProjectModal
-					v-for="project in allProjects"
-					v-if="isEditModalOpen[project._id]"
-					:project="project"
-					:key="project._id"
-					:modalOpen="isEditModalOpen[project._id]"
-					@closeModal="editModalClose"
-					@getProjects="getProjects"></EditProjectModal>
-				<DeleteProjectModal></DeleteProjectModal>
+
+				<template v-for="project in allProjects">
+					<EditProjectModal
+						v-if="isEditModalOpen[project._id]"
+						:project="project"
+						:key="project._id + ' edit'"
+						:modalOpen="isEditModalOpen[project._id]"
+						@closeModal="editModalClose"
+						@getProjects="getProjects"></EditProjectModal>
+				</template>
+
+				<template v-for="project in allProjects">
+					<DeleteProjectModal
+						v-if="isDeleteModalOpen[project._id]"
+						:project="project"
+						:key="project._id + ' del'"
+						:modalOpen="isDeleteModalOpen[project._id]"
+						@closeModal="deleteModalClose"
+						@getProjects="getProjects"></DeleteProjectModal>
+				</template>
 			</div>
 		</div>
 	</div>
@@ -53,8 +65,8 @@ import FilterSearch from '@/components/FilterSearch/FilterSearch.vue';
 import Plug from '@/components/Plug/Plug.vue';
 import Pagintations from '@/components/Paginations/Pagintations.vue';
 import Loader from '@/UI/Loader/Loader.vue';
-import CreateProjectModal from '@/UI/Forms/ModalsForm/CreateProjectModal.vue';
-import EditProjectModal from '@/UI/Forms/ModalsForm/EditProjectModal.vue';
+import CreateProjectModal from '@/UI/Forms/ModalsForm/CreateModals/CreateProjectModal.vue';
+import EditProjectModal from '@/UI/Forms/ModalsForm/EditModals/EditProjectModal.vue';
 import DeleteProjectModal from '@/UI/Forms/ModalsForm/DeleteModals/DeleteProjectModal.vue';
 
 export default {
@@ -85,12 +97,13 @@ export default {
 				},
 			],
 			isEditModalOpen: [],
+			isDeleteModalOpen: [],
 			modalOpen: false,
 		};
 	},
 	computed: {
 		...mapGetters({
-			allProjects: 'ProjectModule/getAllProjects',
+			allProjects: 'ProjectModule/getProjects',
 			totalPages: 'ProjectModule/getTotalPages',
 			currentPage: 'ProjectModule/getCurrentPage',
 			isFetching: 'ProjectModule/getFetching',
@@ -129,6 +142,12 @@ export default {
 		},
 		editModalClose(id) {
 			this.$set(this.isEditModalOpen, id, false);
+		},
+		deleteModalOpen(id) {
+			this.$set(this.isDeleteModalOpen, id, true);
+		},
+		deleteModalClose(id) {
+			this.$set(this.isDeleteModalOpen, id, false);
 		},
 	},
 	mounted() {

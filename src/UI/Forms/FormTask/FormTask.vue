@@ -1,5 +1,5 @@
 <template>
-	<form class="create-task__form">
+	<form class="create-task__form" @input="$emit('change')">
 		<div class="create-task__form-group">
 			<label class="create-task__label" for="name"
 				>Название
@@ -14,7 +14,7 @@
 				required />
 		</div>
 		<div class="create-task__form-group">
-			<label class="create-task__label">Описание</label>
+			<label class="create-task__label two">Описание</label>
 			<textarea
 				v-model.trim="model.description"
 				class="create-task__textarea"
@@ -26,7 +26,7 @@
 				<div class="required">*</div></label
 			>
 			<Select
-				v-model="model.project"
+				v-model="model.projectId"
 				className="create-task__select"
 				:options="projectsArray"
 				required></Select>

@@ -44,11 +44,11 @@ export default {
 		UserItem,
 		Pagintations,
 		FilterSearch,
-    Loader
+		Loader,
 	},
 	computed: {
 		...mapGetters({
-			allUsers: 'UsersModule/getAllUsers',
+			allUsers: 'UsersModule/getUsers',
 			totalPages: 'UsersModule/getTotalPages',
 			currentPage: 'UsersModule/getCurrentPage',
 			isFetching: 'UsersModule/getFetching',
@@ -59,7 +59,7 @@ export default {
 	},
 	methods: {
 		...mapActions({
-			getAllUsers: 'UsersModule/getAllUsers',
+			getUsers: 'UsersModule/getUsers',
 			setCurrentPage: 'UsersModule/setCurrentPage',
 			getUsersPicture: 'UsersModule/getUsersPicture',
 		}),
@@ -73,7 +73,7 @@ export default {
 		},
 		currentPageNext(page) {
 			this.setCurrentPage(page);
-			this.getAllUsers({
+			this.getUsers({
 				page: page,
 			});
 		},
@@ -86,7 +86,7 @@ export default {
 		},
 	},
 	mounted() {
-		this.getAllUsers();
+		this.getUsers();
 	},
 };
 </script>
