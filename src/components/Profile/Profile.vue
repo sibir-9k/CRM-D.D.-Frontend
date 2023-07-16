@@ -10,11 +10,6 @@
 					<h1 class="info-top__name">{{ userData.name }}</h1>
 					<Status classNameStatus="status" :class="statusClass" :status="statusText"></Status>
 				</div>
-				<!-- <button class="setting-btn" data-path="task-item">
-					<svg>
-						<use xlink:href="#dots" />
-					</svg>
-				</button> -->
 				<DropdownButton :dropList="dropList" iconName="dots" classNameBlock="profile-item__setting">
 				</DropdownButton>
 			</div>
