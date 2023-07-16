@@ -2,12 +2,12 @@
 	<div class="filter-search">
 		<SearchInput></SearchInput>
 		<div class="filter-search__select-block">
-			<Select
+			<SelectSort
 				classNameOption="filter-search__select"
-				:v-model="selected"
-				:options="sortElem"></Select>
-			<button class="filter-search__btn">
-				<Icon iconName="filter-arrow-up"></Icon>
+				v-model="sortField"
+				:options="sortElem"></SelectSort>
+			<button class="filter-search__btn" @click="changeSortType">
+				<Icon :iconName="sortType === 'asc' ? 'filter-arrow-up' : 'filter-arrow-down'" ></Icon>
 			</button>
 		</div>
 		<div v-for="(btn, index) in addBtn" :key="index">
@@ -33,32 +33,45 @@
 
 <script>
 import SearchInput from '@/UI/SearchInput/SearchInput.vue';
-import Select from '@/UI/Select/Select.vue';
 import Icon from '@/UI/Icon/Icon.vue';
+import SelectSort from '@/UI/Select/SelectSort.vue';
 import './style.scss';
 
 export default {
 	name: 'FilterSearch',
 	components: {
 		SearchInput,
-		Select,
 		Icon,
+		SelectSort,
 	},
 	props: {
 		addBtn: Array,
 	},
 	data() {
 		return {
-			selected: '',
+			sortField: 'name',
+			sortType: 'asc',
 			sortElem: [
-				{ value: 'По названию', optionText: 'По названию' },
-				{ value: 'По автору', optionText: 'По автору' },
-				{ value: 'По статусу', optionText: 'По статусу' },
-				{ value: 'По исполнителю', optionText: 'По исполнителю' },
-				{ value: 'По дате создания', optionText: 'По дате создания' },
-				{ value: 'По дате обновления', optionText: 'По дате обновления' },
+				{ value: 'name', optionText: 'По названию' },
+				{ value: 'author', optionText: 'По автору' },
+				{ value: 'dateCreated', optionText: 'По дате создания' },
+				{ value: 'dateEdited', optionText: 'По дате обновления' },
 			],
 		};
+	},
+	methods: {
+		changeArrowType() {
+			this.sortType === asc ? 'filter-arrow-up' : 'filter-arrow-down';
+		},
+		changeSortType() {
+			this.sortType = this.sortType === 'asc' ? 'desc' : 'asc';
+			this.$emit('updateSort', this.sortField, this.sortType);
+		},
+	},
+	watch: {
+		sortField: function (sort) {
+			this.$emit('updateSort', sort, this.sortType);
+		},
 	},
 };
 </script>

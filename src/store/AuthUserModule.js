@@ -49,7 +49,6 @@ export default {
 				context.commit(mutation.SET_USER_TOKEN, response.data.token);
 				localStorage.setItem('UserToken', context.getters.getUserToken);
 				await context.dispatch('getCurrentUser', response.data.token);
-				router.push('/');
 			} catch (error) {
 				console.log(error);
 				context.commit(mutation.SET_USER_TOKEN, null);
@@ -65,7 +64,6 @@ export default {
 						Authorization: `Bearer ${token}`,
 					},
 				});
-				console.log(response);
 				context.commit(mutation.SET_USER_ID, response.data._id); /// проверить используется где то
 				context.commit(mutation.SET_USER_CURRENT_DATA, response.data);
 			} catch (error) {

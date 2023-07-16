@@ -55,4 +55,7 @@ export default {
 	line-height: normal;
 	color: black;
 }
+ul {
+	z-index: 10;
+}
 </style>

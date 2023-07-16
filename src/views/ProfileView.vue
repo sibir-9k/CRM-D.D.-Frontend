@@ -1,8 +1,5 @@
 <template>
-	<div class="home">
-		<Navigation></Navigation>
 		<Profile :userData="currentUserData"></Profile>
-	</div>
 </template>
 
 <script>

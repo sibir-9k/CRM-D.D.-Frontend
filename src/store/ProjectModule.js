@@ -47,8 +47,8 @@ export default {
 		},
 	},
 	actions: {
-		async getProjects(context, objData = { page: 1 }) {
-			context.commit(mutation.SET_PROJECTS_FETCHING, true);
+		async getProjects({ commit }, objData = { page: 1 }) {
+			commit(mutation.SET_PROJECTS_FETCHING, true);
 
 			try {
 				if (!objData || !objData.page) {
@@ -61,18 +61,15 @@ export default {
 					},
 				});
 				const result = await response.data;
-
-				context.commit(mutation.SET_PROJECTS_FETCHING, false);
-
-				console.log(result);
-				context.commit(mutation.SET_PROJECTS_LIST, result.projects);
-				context.commit(mutation.SET_PROJECTS_TOTAL_PAGES, result.total);
-				context.commit(mutation.SET_PROJECTS_CURRENT_PAGE, result.page);
+				commit(mutation.SET_PROJECTS_FETCHING, false);
+				commit(mutation.SET_PROJECTS_LIST, result.projects);
+				commit(mutation.SET_PROJECTS_TOTAL_PAGES, result.total);
+				commit(mutation.SET_PROJECTS_CURRENT_PAGE, result.page);
 			} catch (error) {
 				console.log(error);
 			}
 		},
-		async getAllProjects(context) {
+		async getAllProjects({ commit }) {
 			try {
 				const response = await axios.post(
 					`${BASE_URL}/projects/search`,
@@ -91,14 +88,13 @@ export default {
 					}
 				);
 				const result = await response.data;
-				console.log(result);
-				context.commit(mutation.SET_ALL_PROJECTS_LIST, result.projects);
+				commit(mutation.SET_ALL_PROJECTS_LIST, result.projects);
 			} catch (error) {
 				console.log(error);
 			}
 		},
-		setCurrentPage(context, page) {
-			context.commit(mutation.SET_PROJECTS_CURRENT_PAGE, page);
+		setCurrentPage({ commit }, page) {
+			commit(mutation.SET_PROJECTS_CURRENT_PAGE, page);
 		},
 	},
 };

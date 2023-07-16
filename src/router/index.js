@@ -37,16 +37,16 @@ const routes = [
 		meta: { auth: true },
 	},
 	{
-		path: '/create-task',
+		path: '/tasks/create',
 		name: 'create-task',
 		component: CreateTask,
-    meta: { auth: true },
+		meta: { auth: true },
 	},
 	{
-		path: '/edit-task',
+		path: '/tasks/:id',
 		name: 'edit-task',
 		component: EditTask,
-    meta: { auth: true },
+		meta: { auth: true },
 	},
 	{
 		path: '/users',
@@ -67,7 +67,7 @@ const router = new VueRouter({
 	routes,
 });
 
-const guardAuth = async (next) => {
+const guardAuth = async (to, from,next) => {
 	if (!localStorage.getItem('UserToken')) next('/auth');
 
 	await router.app.$store.dispatch(
@@ -79,17 +79,19 @@ const guardAuth = async (next) => {
 
 	if (!currentUserIsAuth) {
 		next('/auth');
-	}
+	} else {
+    next()
+  }
 };
 
 router.beforeEach(async (to, from, next) => {
 	const requreAuth = to.matched.some((route) => route.meta.auth);
 
 	if (requreAuth) {
-		await guardAuth(next);
+		await guardAuth(to, from,next);
+	} else {
+		next();
 	}
-
-	next();
 });
 
 export default router;

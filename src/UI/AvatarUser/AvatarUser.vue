@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import { BASE_URL_PICTURE } from '@/api/api.js';
 export default {
 	name: 'AvatarUser',
 	props: {
@@ -11,7 +12,7 @@ export default {
 	},
 	computed: {
 		avatarLink() {
-			return `http://45.12.239.156:8081/${this.pictureUrl}`;
+			return `${BASE_URL_PICTURE}/${this.pictureUrl}`;
 		},
 	},
 };

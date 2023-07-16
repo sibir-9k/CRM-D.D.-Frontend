@@ -41,7 +41,6 @@ export default {
 		},
 		updateProjectFormData: {
 			type: Object,
-			// default: () => ({ code: this.project.code, name: this.project.name }),
 			require: true,
 		},
 		project: {
@@ -59,8 +58,7 @@ export default {
 	watch: {
 		projectFormData: {
 			handler: function (val) {
-				this.updateProjectFormData.code = val.code;
-				this.updateProjectFormData.name = val.name;
+				this.$emit('updateForm', val);
 			},
 			deep: true,
 		},

@@ -53,7 +53,7 @@ export default {
 		},
 		resetError() {
 			if (this.userError) {
-				this.$store.state.AuthUserModule.isError = false
+				this.$store.state.AuthUserModule.isError = false;
 			}
 		},
 	},

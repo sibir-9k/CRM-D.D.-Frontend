@@ -8,14 +8,14 @@
 			data-path="project-item">
 			<div v-if="imgUser">
 				<AvatarUser
-					v-if="currentUserData.picture"
-					:pictureUrl="currentUserData.picture"
-					:altName="currentUserData.name" />
+					v-if="currentUserData?.picture"
+					:pictureUrl="currentUserData?.picture"
+					:altName="currentUserData?.name" />
 				<div v-else class="user-item__initials">{{ getInitialUsers() }}</div>
 			</div>
 			<Icon :iconName="iconName"></Icon>
 		</button>
-		<DropList :items="dropList" :class="classList" class="setting-drop-down__list"> </DropList>
+		<DropList :items="dropList" :class="classList" class="setting-drop-down__list"></DropList>
 	</div>
 </template>
 
@@ -57,7 +57,6 @@ export default {
 	data() {
 		return {
 			isOpen: false,
-			userImg: this.imgUser,
 		};
 	},
 	computed: {
@@ -76,7 +75,7 @@ export default {
 			this.isOpen = false;
 		},
 		getInitialUsers() {
-			return initialUsers(this.currentUserData.name);
+			if (this.currentUserData?.name) return initialUsers(this.currentUserData.name);
 		},
 	},
 	directives: {

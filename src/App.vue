@@ -1,8 +1,21 @@
 <template>
 	<div id="app">
-		<router-view />
+		<Navigation v-if="$route.path !== '/auth' && $route.name !== 'not-found'" />
+		<main class="home">
+			<router-view />
+		</main>
 	</div>
 </template>
+
+<script>
+import Navigation from './components/Navigation/Navigation.vue';
+export default {
+	name: 'App',
+	components: {
+		Navigation,
+	},
+};
+</script>
 
 <style lang="scss">
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');

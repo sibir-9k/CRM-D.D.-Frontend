@@ -12,14 +12,14 @@
 				<div class="item-block__footer">
 					<div class="footer-author">
 						<Tooltip :text="'#' + project.code"> #{{ project.code }} </Tooltip>
-						<span class="footer-author__name">
-							{{ nameCreated }} создал {{ formattedDateCreated }}
+						<span class="footer-author__name" v-if="project.author">
+							{{ users[project.author]?.name }} создал {{ formattedDateCreated }}
 						</span>
 					</div>
 					<div class="footer__block-right">
 						<div class="footer__editor">
 							<span class="footer-author__name" v-if="project.authorEdited">
-								{{ nameEdit }} изменил {{ formattedDateEdited }}
+								{{ users[project.authorEdited]?.name }} изменил {{ formattedDateEdited }}
 							</span>
 						</div>
 					</div>
@@ -32,8 +32,6 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { BASE_URL } from '@/api/api.js';
 import { formatDate } from '@/helpers/formatDate.js';
 import FormProject from '@/UI/Forms/FormProject/FormProject.vue';
 import DropdownButton from '@/UI/Dropdown/DropdownButton/DropdownButton.vue';
@@ -52,6 +50,7 @@ export default {
 			type: Object,
 			required: true,
 		},
+		users: Object,
 	},
 	data() {
 		return {
@@ -60,7 +59,7 @@ export default {
 					type: 'button',
 					props: {
 						onClick: () => {
-							this.$emit('editModalOpen', this.project._id);
+							this.$emit('editModalOpen', this.project);
 						},
 					},
 					text: 'Редактировать',
@@ -69,7 +68,7 @@ export default {
 					type: 'button',
 					props: {
 						onClick: () => {
-							this.$emit('deleteModalOpen', this.project._id);
+							this.$emit('deleteModalOpen', this.project);
 						},
 					},
 					class: 'delete',
@@ -89,37 +88,6 @@ export default {
 
 		this.formattedDateCreated = formattedDate;
 		this.formattedDateEdited = formattedDateEdited;
-
-		const getUsers = async (idAuthor, idEdited) => {
-			try {
-				const response = await axios.post(
-					`${BASE_URL}/users/search`,
-					{
-						filter: {
-							_id: idAuthor === idEdited ? idAuthor : [idAuthor, idEdited],
-						},
-					},
-					{
-						headers: {
-							'Content-Type': 'application/json',
-							Authorization: `Bearer ${localStorage.getItem('UserToken')}`,
-						},
-					}
-				);
-				const result = await response.data.users;
-				if (idAuthor === idEdited) {
-					this.nameCreated = await result[0]?.name;
-					this.nameEdit = await result[0]?.name;
-				} else {
-					this.nameCreated = await result[0]?.name;
-					this.nameEdit = await result[1]?.name;
-				}
-			} catch (error) {
-				console.log(error);
-			}
-		};
-
-		getUsers(this.project.author, this.project.authorEdited);
 	},
 };
 </script>

@@ -22,7 +22,7 @@
 						<span class="footer-author__name">
 							{{ nameCreated }} создал {{ formattedDateCreated }}
 						</span>
-						<Status classNameStatus="status status--draft" :status="taskItem.status"></Status>
+						<Status classNameStatus="status" :class="statusClass" :status="statusText"></Status>
 					</div>
 					<div class="footer__block-right">
 						<div class="footer__editor" v-if="taskItem.authorEdit">
@@ -64,17 +64,61 @@ export default {
 			dropList: [
 				{
 					type: 'router-link',
-					props: { to: '/edit-task' },
+					props: { to: `/tasks/${this.taskItem._id}` },
 					class: 'edit',
 					text: 'Редактировать',
 				},
-				{ type: 'button', props: { onClick: this.openModal }, class: 'delete', text: 'Удалить' },
+				{
+					type: 'button',
+					props: {
+						onClick: () => {
+							this.$emit('deleteModalOpen', this.taskItem);
+						},
+					},
+					class: 'delete',
+					text: 'Удалить',
+				},
 			],
 			formattedDateCreated: '',
 			formattedDateEdited: '',
 			nameEdit: '',
 			nameCreated: '',
 		};
+	},
+	computed: {
+		statusClass() {
+			const statusClasses = {
+				DRAFT: 'status--draft',
+				IN_PROCESS: 'status--draft',
+				TESTING: 'status--draft',
+				COMPLETED: 'status--done',
+				TESTING_DONE: 'status--done',
+				CLOSED: 'status--close',
+				DELETED: 'status--error',
+			};
+
+			return statusClasses[this.taskItem.status] || '';
+		},
+		statusText() {
+			switch (this.taskItem.status) {
+				case 'DRAFT':
+					return 'Черновик';
+				case 'IN_PROCESS':
+					return 'В работе';
+				case 'COMPLETED':
+					return 'Завершена';
+				case 'TESTING':
+					return 'Тестирование';
+				case 'TESTING_DONE':
+					return 'Выполнена';
+				case 'CLOSED':
+					return 'Закрыта';
+				case 'DELETED':
+					return 'Удалена';
+				default:
+					return '';
+			}
+		},
 	},
 	methods: {
 		getInitialUsers() {

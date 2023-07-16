@@ -1,64 +1,56 @@
 <template>
-	<div class="home">
-		<Navigation></Navigation>
-		<div class="content">
-			<template>
-				<Plug v-if="!checkProjects" textMessage="Не создан ни один проект"></Plug>
+	<div class="content">
+		<template>
+			<Plug v-if="!checkProjects" textMessage="Не создан ни один проект"></Plug>
+			<template v-else>
+				<FilterSearch :addBtn="addBtn" @updateSort="updateSort"></FilterSearch>
+				<Loader v-if="isFetching" class="project-list"></Loader>
 				<template v-else>
-					<FilterSearch :addBtn="addBtn"></FilterSearch>
-					<Loader v-if="isFetching" class="project-list"></Loader>
-					<template v-else>
-						<div class="project-list">
-							<ProjectItem
-								v-for="project in allProjects"
-								:project="project"
-								:key="project._id"
-								@editModalOpen="editModalOpen"
-								@deleteModalOpen="deleteModalOpen">
-							</ProjectItem>
-						</div>
-					</template>
-					<Pagintations
-						:totalPages="totalPages"
-						:currentPage="currentPage"
-						@current-page-next="currentPageNext"
-						@prev-page="prevPage"
-						@next-page="nextPage"></Pagintations>
+					<div class="project-list">
+						<ProjectItem
+							v-for="project in allProjects"
+							:project="project"
+							:key="project._id"
+							@editModalOpen="editModalOpen"
+							@deleteModalOpen="deleteModalOpen"
+							:users="users">
+						</ProjectItem>
+					</div>
 				</template>
+				<Pagintations
+					:totalPages="totalPages"
+					:currentPage="currentPage"
+					@current-page-next="currentPageNext"
+					@prev-page="prevPage"
+					@next-page="nextPage"></Pagintations>
 			</template>
-			<div class="modals-block">
-				<CreateProjectModal
-					v-if="modalOpen"
-					:modalOpen="modalOpen"
-					@modal-close="modalClose"
-					@getProjects="getProjects"></CreateProjectModal>
+		</template>
+		<div class="modals-block">
+			<CreateProjectModal
+				v-if="modalOpen"
+				@modal-close="modalClose"
+				@getProjects="getProjects"></CreateProjectModal>
 
-				<template v-for="project in allProjects">
-					<EditProjectModal
-						v-if="isEditModalOpen[project._id]"
-						:project="project"
-						:key="project._id + ' edit'"
-						:modalOpen="isEditModalOpen[project._id]"
-						@closeModal="editModalClose"
-						@getProjects="getProjects"></EditProjectModal>
-				</template>
+			<EditProjectModal
+				v-if="editProject"
+				:project="editProject"
+				:key="editProject._id + ' edit'"
+				@closeModal="editModalClose"
+				@getProjects="getProjects"></EditProjectModal>
 
-				<template v-for="project in allProjects">
-					<DeleteProjectModal
-						v-if="isDeleteModalOpen[project._id]"
-						:project="project"
-						:key="project._id + ' del'"
-						:modalOpen="isDeleteModalOpen[project._id]"
-						@closeModal="deleteModalClose"
-						@getProjects="getProjects"></DeleteProjectModal>
-				</template>
-			</div>
+			<DeleteProjectModal
+				v-if="deleteProject"
+				:project="deleteProject"
+				:key="deleteProject._id + ' del'"
+				@closeModal="deleteModalClose"
+				@getProjects="getProjects"></DeleteProjectModal>
 		</div>
 	</div>
 </template>
 
 <script>
-import { mapGetters, mapActions, mapState } from 'vuex';
+import { BASE_URL } from '@/api/api.js';
+import { mapGetters, mapActions } from 'vuex';
 import Navigation from '@/components/Navigation/Navigation.vue';
 import ProjectItem from '@/components/Project-item/ProjectItem.vue';
 import FilterSearch from '@/components/FilterSearch/FilterSearch.vue';
@@ -68,6 +60,7 @@ import Loader from '@/UI/Loader/Loader.vue';
 import CreateProjectModal from '@/UI/Forms/ModalsForm/CreateModals/CreateProjectModal.vue';
 import EditProjectModal from '@/UI/Forms/ModalsForm/EditModals/EditProjectModal.vue';
 import DeleteProjectModal from '@/UI/Forms/ModalsForm/DeleteModals/DeleteProjectModal.vue';
+import axios from 'axios';
 
 export default {
 	name: 'ProjectView',
@@ -84,6 +77,7 @@ export default {
 	},
 	data() {
 		return {
+			users: {},
 			addBtn: [
 				{
 					type: 'button',
@@ -96,9 +90,13 @@ export default {
 					text: 'Добавить',
 				},
 			],
-			isEditModalOpen: [],
-			isDeleteModalOpen: [],
+			editProject: null,
+			deleteProject: null,
 			modalOpen: false,
+			sort: {
+				field: 'name',
+				type: 'asc',
+			},
 		};
 	},
 	computed: {
@@ -107,9 +105,6 @@ export default {
 			totalPages: 'ProjectModule/getTotalPages',
 			currentPage: 'ProjectModule/getCurrentPage',
 			isFetching: 'ProjectModule/getFetching',
-		}),
-		...mapState({
-			isFetching: (state) => state.ProjectModule.isFetching,
 		}),
 	},
 	methods: {
@@ -129,29 +124,72 @@ export default {
 			this.setCurrentPage(page);
 			this.getProjects({
 				page: page,
+				sort: this.sort,
+			});
+		},
+		updateSort(field, type) {
+			this.sort.field = field;
+			this.sort.type = type;
+			this.getProjects({
+				page: 1,
+				sort: this.sort,
 			});
 		},
 		checkProjects() {
-			return this.allProjects.length > 0 ? true : false;
+			return this.allProjects.length > 0;
 		},
 		modalClose() {
 			this.modalOpen = false;
 		},
-		editModalOpen(id) {
-			this.$set(this.isEditModalOpen, id, true);
+		editModalOpen(project) {
+			this.editProject = project;
 		},
-		editModalClose(id) {
-			this.$set(this.isEditModalOpen, id, false);
+		editModalClose(project) {
+			this.editProject = null;
 		},
-		deleteModalOpen(id) {
-			this.$set(this.isDeleteModalOpen, id, true);
+		deleteModalOpen(project) {
+			this.deleteProject = project;
 		},
-		deleteModalClose(id) {
-			this.$set(this.isDeleteModalOpen, id, false);
+		deleteModalClose(project) {
+			this.deleteProject = null;
 		},
 	},
 	mounted() {
 		this.getProjects();
+	},
+	watch: {
+		allProjects: {
+			async handler(projects) {
+				this.users = {};
+				if (projects.length > 0)
+					try {
+						const response = await axios.post(
+							`${BASE_URL}/users/search`,
+							{
+								filter: {
+									_id: [
+										...projects.map((project) => project.author),
+										...projects.map((project) => project?.authorEdited),
+									],
+								},
+							},
+							{
+								headers: {
+									'Content-Type': 'application/json',
+									Authorization: `Bearer ${localStorage.getItem('UserToken')}`,
+								},
+							}
+						);
+
+						response.data.users.forEach((element) => {
+							this.$set(this.users, element._id, element);
+						});
+					} catch (error) {
+						console.log(error);
+					}
+			},
+			deep: true,
+		},
 	},
 };
 </script>

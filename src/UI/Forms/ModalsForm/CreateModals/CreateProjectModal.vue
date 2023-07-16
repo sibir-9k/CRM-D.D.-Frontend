@@ -3,7 +3,7 @@
 		<div class="project-create">
 			<h2 class="project-create__title">Создание проекта</h2>
 			<hr />
-			<FormProject v-bind:projectFormData="projectFormData"></FormProject>
+			<FormProject :projectFormData="projectFormData" @updateForm="updateForm"></FormProject>
 			<hr />
 			<div class="btn-block">
 				<Button btnClassName="btn-cancel" btnName="Отмена" v-on:click="modalClose"></Button>
@@ -25,11 +25,6 @@ import Button from '@/UI/Button/Button.vue';
 export default {
 	name: 'CreateProjectModal',
 	components: { FormProject, Button },
-	props: {
-		modalOpen: {
-			type: Boolean,
-		},
-	},
 	data() {
 		return {
 			projectFormData: {
@@ -45,9 +40,13 @@ export default {
 		updateProjectsList() {
 			this.$emit('getProjects');
 		},
+		updateForm(val) {
+			this.projectFormData.code = val.code;
+			this.projectFormData.name = val.name;
+		},
 		async createProject(code, name) {
 			try {
-				const response = await axios.post(
+				await axios.post(
 					`${BASE_URL}/projects`,
 					{
 						name: `${name}`,
@@ -60,8 +59,6 @@ export default {
 						},
 					}
 				);
-				const result = await response.data;
-				console.log(result);
 				this.updateProjectsList();
 				this.modalClose();
 			} catch (error) {

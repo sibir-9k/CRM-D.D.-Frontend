@@ -1,16 +1,11 @@
 <template>
-	<div class="home">
-		<Navigation></Navigation>
-		<CreateTask
-			:allUsers="allUsers"
-			:allProjects="allProjects"
-			@modal-close="modalClose"
-			@getTasks="getTasks"></CreateTask>
-	</div>
+	<CreateTask
+		:allUsers="allUsers"
+		:allProjects="allProjects"></CreateTask>
 </template>
 
 <script>
-import { mapGetters, mapActions, mapState } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import Profile from '@/components/Profile/Profile.vue';
 import Navigation from '@/components/Navigation/Navigation.vue';
 import CreateTask from '@/components/CreateTask/CreateTask.vue';
@@ -21,11 +16,6 @@ export default {
 		Profile,
 		Navigation,
 		CreateTask,
-	},
-	data() {
-		return {
-			modalOpen: false,
-		};
 	},
 	computed: {
 		...mapGetters({
@@ -39,9 +29,6 @@ export default {
 			getAllUsers: 'UsersModule/getAllUsers',
 			getAllProjects: 'ProjectModule/getAllProjects',
 		}),
-		modalClose() {
-			this.modalOpen = false;
-		},
 	},
 	mounted() {
 		this.getAllUsers();

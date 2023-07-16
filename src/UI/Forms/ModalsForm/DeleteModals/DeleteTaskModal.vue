@@ -1,19 +1,16 @@
 <template>
 	<div>
 		<div class="container-form">
-			<div class="delete-project">
-				<h2 class="delete-project__title">Удаление</h2>
+			<div class="delete-task">
+				<h2 class="delete-task__title">Удаление</h2>
 				<hr />
-				<div class="delete-project__message">
-					Вы уверены что хотите <span>удалить</span> проект "{{ project.name }}"?
+				<div class="delete-task__message">
+					Вы уверены что хотите <span>удалить</span> задача "{{ task.name }}"?
 				</div>
 				<hr />
 				<div class="btn-block">
 					<Button btnClassName="btn-cancel" btnName="Отмена" v-on:click="modalClose"></Button>
-					<Button
-						btnClassName="btn-create"
-						btnName="Да"
-						v-on:click="deleteProject(project._id)"></Button>
+					<Button btnClassName="btn-create" btnName="Да" v-on:click="deleteTask(task._id)"></Button>
 				</div>
 			</div>
 		</div>
@@ -27,31 +24,31 @@ import Button from '@/UI/Button/Button.vue';
 import './style.scss';
 
 export default {
-	name: 'DeleteProjectModal',
+	name: 'DeleteTaskModal',
 	components: {
 		Button,
 	},
 	props: {
-		project: {
+		task: {
 			type: Object,
 		},
 	},
 	methods: {
 		modalClose() {
-			this.$emit('closeModal', this.project._id);
+			this.$emit('closeModal', this.task._id);
 		},
-		updateProjectsList() {
-			this.$emit('getProjects');
+		updateTasksList() {
+			this.$emit('getTasks');
 		},
-		async deleteProject(projectID) {
+		async deleteTask(taskID) {
 			try {
-				await axios.delete(`${BASE_URL}/projects/${projectID}`, {
+				await axios.delete(`${BASE_URL}/tasks/${taskID}`, {
 					headers: {
 						'Content-Type': 'application/json; charset=utf-8',
 						Authorization: `Bearer ${localStorage.getItem('UserToken')}`,
 					},
 				});
-				this.updateProjectsList();
+				this.updateTasksList();
 				this.modalClose();
 			} catch (error) {
 				console.log(error);

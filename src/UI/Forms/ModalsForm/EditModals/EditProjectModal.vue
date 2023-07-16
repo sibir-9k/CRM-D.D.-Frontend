@@ -3,7 +3,10 @@
 		<div class="project-create">
 			<h2 class="project-create__title">Редактирование проекта</h2>
 			<hr />
-			<FormProject :project="project" :updateProjectFormData="updateProjectFormData"></FormProject>
+			<FormProject
+				:project="project"
+				:updateProjectFormData="updateProjectFormData"
+				@updateForm="updateForm"></FormProject>
 			<hr />
 			<div class="btn-block">
 				<Button btnClassName="btn-cancel" btnName="Отмена" v-on:click="modalClose"></Button>
@@ -44,6 +47,10 @@ export default {
 		},
 		updateProjectsList() {
 			this.$emit('getProjects');
+		},
+		updateForm(val) {
+			this.updateProjectFormData.code = val.code;
+			this.updateProjectFormData.name = val.name;
 		},
 		async editProject(code, name) {
 			try {

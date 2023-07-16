@@ -1,6 +1,4 @@
 <template>
-	<div class="home">
-		<Navigation></Navigation>
 		<div class="content">
 			<template>
 				<Plug v-if="!checkTasks" textMessage="Нету ни одрого пользователя"></Plug>
@@ -24,7 +22,6 @@
 				</template>
 			</template>
 		</div>
-	</div>
 </template>
 
 <script>

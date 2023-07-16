@@ -6,7 +6,7 @@
 				<div class="required">*</div></label
 			>
 			<input
-				v-model.trim="model.name"
+				v-model.trim="createObjData.name"
 				class="create-task__input"
 				type="text"
 				id="name"
@@ -16,7 +16,7 @@
 		<div class="create-task__form-group">
 			<label class="create-task__label two">Описание</label>
 			<textarea
-				v-model.trim="model.description"
+				v-model.trim="createObjData.description"
 				class="create-task__textarea"
 				placeholder="Введите текст..." />
 		</div>
@@ -26,7 +26,7 @@
 				<div class="required">*</div></label
 			>
 			<Select
-				v-model="model.projectId"
+				v-model="createObjData.projectId"
 				className="create-task__select"
 				:options="projectsArray"
 				required></Select>
@@ -34,7 +34,7 @@
 		<div class="create-task__form-group">
 			<label class="create-task__label">Исполнитель</label>
 			<Select
-				v-model="model.executor"
+				v-model="createObjData.executor"
 				className="create-task__select"
 				:options="executorsArray"></Select>
 		</div>
@@ -47,9 +47,25 @@ export default {
 	name: 'FormTask',
 	components: { Select },
 	props: {
-		model: Object,
+		createObjData: Object,
 		projectsArray: Array,
 		executorsArray: Array,
+	},
+	data() {
+		return {
+			data: null,
+		};
+	},
+	watch: {
+		data: {
+			handler: function (val) {
+				this.$emit('updateForm', val);
+			},
+			deep: true,
+		},
+	},
+	mounted() {
+		this.data = this.createObjData;
 	},
 };
 </script>

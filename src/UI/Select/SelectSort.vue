@@ -1,11 +1,12 @@
 <template>
-	<div>
+	<div class="select-sort">
 		<select :class="className" v-model="selectedValue" @input="$emit('input', $event.target.value)">
 			<option
 				:class="classNameOption"
 				v-for="option in options"
 				:key="option.value"
-				:value="option.value">
+				:value="option.value"
+				:selected="option.value === selectedValue">
 				{{ option.optionText }}
 			</option>
 		</select>
@@ -13,10 +14,8 @@
 </template>
 
 <script>
-import '@/assets/svg/filter-arrow-up.svg';
-import './style.scss';
 export default {
-	name: 'Select',
+	name: 'SelectSort',
 	props: {
 		options: {
 			type: Array,
@@ -29,6 +28,7 @@ export default {
 		},
 		value: {
 			type: String,
+			default: 'name',
 		},
 	},
 	data() {

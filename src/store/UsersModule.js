@@ -47,8 +47,8 @@ export default {
 		},
 	},
 	actions: {
-		async getUsers(context, objData = { page: 1 }) {
-			context.commit(mutation.SET_USERS_FETCHING, true);
+		async getUsers({commit}, objData = { page: 1 }) {
+			commit(mutation.SET_USERS_FETCHING, true);
 			try {
 				const response = await axios.post(`${BASE_URL}/users/search`, objData, {
 					headers: {
@@ -57,16 +57,15 @@ export default {
 					},
 				});
 				const result = await response.data;
-				context.commit(mutation.SET_USERS_FETCHING, false);
-				context.commit(mutation.SET_USERS_TOTAL_PAGES, result.total);
-				context.commit(mutation.SET_USERS_CURRENT_PAGE, result.page);
-				context.commit(mutation.SET_USERS_LIST, response.data.users);
-				console.log(result);
+				commit(mutation.SET_USERS_FETCHING, false);
+				commit(mutation.SET_USERS_TOTAL_PAGES, result.total);
+				commit(mutation.SET_USERS_CURRENT_PAGE, result.page);
+				commit(mutation.SET_USERS_LIST, response.data.users);
 			} catch (error) {
 				console.log(error);
 			}
 		},
-		async getAllUsers(context) {
+		async getAllUsers({commit}) {
 			try {
 				const response = await axios.post(
 					`${BASE_URL}/users/search`,
@@ -82,13 +81,13 @@ export default {
 					}
 				);
 				const result = await response.data;
-				context.commit(mutation.SET_ALL_USERS_LIST, result.users);
+				commit(mutation.SET_ALL_USERS_LIST, result.users);
 			} catch (error) {
 				console.log(error);
 			}
 		},
-		setCurrentPage(context, page) {
-			context.commit(mutation.SET_USERS_CURRENT_PAGE, page);
+		setCurrentPage({commit}, page) {
+			commit(mutation.SET_USERS_CURRENT_PAGE, page);
 		},
 		async getUsersPicture(context, id) {
 			try {

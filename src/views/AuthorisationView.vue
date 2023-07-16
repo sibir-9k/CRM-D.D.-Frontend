@@ -1,6 +1,9 @@
 <template>
 	<div class="container">
-		<Authorisation :login-data="loginData" @get-user="getUser" :userError="userError"></Authorisation>
+		<Authorisation
+			:login-data="loginData"
+			@get-user="getUser"
+			:userError="userError"></Authorisation>
 	</div>
 </template>
 
@@ -34,8 +37,9 @@ export default {
 			getTokenUser: 'AuthUserModule/getTokenUser',
 			getCurrentUser: 'AuthUserModule/getCurrentUser',
 		}),
-		getUser() {
-			this.getTokenUser(this.loginData);
+		async getUser() {
+			await this.getTokenUser(this.loginData);
+			this.$router.push('/');
 		},
 	},
 };
