@@ -66,7 +66,6 @@ export default {
 					},
 				});
 				const result = await response.data;
-        console.log(result)
 				commit(mutation.SET_TASKS_FETCHING, false);
 				commit(mutation.SET_TASKS_LIST, result.tasks);
 				commit(mutation.SET_TASKS_TOTAL_PAGES, result.total);
