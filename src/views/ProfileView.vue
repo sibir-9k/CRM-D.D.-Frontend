@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapGetters } from 'vuex';
 import Profile from '@/components/Profile/Profile.vue';
 import Navigation from '@/components/Navigation/Navigation.vue';
 

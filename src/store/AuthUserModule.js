@@ -64,6 +64,7 @@ export default {
 						Authorization: `Bearer ${token}`,
 					},
 				});
+        console.log(response.data)
 				context.commit(mutation.SET_USER_ID, response.data._id); /// проверить используется где то
 				context.commit(mutation.SET_USER_CURRENT_DATA, response.data);
 			} catch (error) {
