@@ -11,7 +11,8 @@
 	width: 100%;
 	z-index: 9999;
 
-	.delete-project {
+	.delete-project,
+  .delete-task {
 		display: flex;
 		flex-direction: column;
 		padding: 24px;
